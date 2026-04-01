@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VMS Protocol Guide Coverage — Launch Week Analysis</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&family=Syne+Mono&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:         #ffffff;
+    --bg2:        #f8f8f7;
+    --bg3:        #f0efec;
+    --border:     #e4e3de;
+    --border2:    #cccbc4;
+    --text:       #1a1917;
+    --muted:      #6b6860;
+    --faint:      #a8a69f;
+    --green:      #1a6b3a;
+    --green-bg:   #eaf5ee;
+    --green-mid:  #4caf70;
+    --red:        #8c1f1f;
+    --red-bg:     #fdf0f0;
+    --red-mid:    #d95c5c;
+    --amber:      #7a4d0a;
+    --amber-bg:   #fdf5e6;
+    --amber-mid:  #e8a030;
+    --blue:       #1a3d6b;
+    --blue-bg:    #eef3fb;
+    --blue-mid:   #4a7fc1;
+    --purple:     #3d1a6b;
+    --purple-bg:  #f0eef8;
+    --purple-mid: #7c5cbf;
+    --accent:     #1a6b3a;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  /* ── Top nav ── */
+  .topnav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    height: 48px;
+    display: flex;
+    align-items: center;
+    padding: 0 3rem;
+    gap: 2rem;
+  }
+  .topnav-brand {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .topnav-divider { width: 1px; height: 18px; background: var(--border); flex-shrink: 0; }
+  .topnav-links { display: flex; align-items: center; gap: 0.25rem; list-style: none; }
+  .topnav-links a {
+    font-size: 13px;
+    color: var(--muted);
+    text-decoration: none;
+    padding: 4px 10px;
+    border-radius: 5px;
+    transition: background 0.15s, color 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .topnav-links a:hover { background: var(--bg2); color: var(--text); }
+  .topnav-links a.active { color: var(--text); font-weight: 500; }
+  .topnav-links a.glossary-link {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-weight: 500;
+  }
+  .topnav-links a.glossary-link:hover { background: var(--bg3); }
+  .topnav-spacer { flex: 1; }
+  .topnav-date {
+    font-family: 'Syne Mono', monospace;
+    font-size: 11px;
+    color: var(--faint);
+    white-space: nowrap;
+  }
+
+  /* ── Header ── */
+  header {
+    padding: 3.5rem 3rem 2.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .header-inner { max-width: 1100px; margin: 0 auto; }
+  .eyebrow {
+    font-family: 'Syne Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .eyebrow::before { content: ''; width: 20px; height: 1.5px; background: var(--accent); display: inline-block; flex-shrink: 0; }
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(1.9rem, 3.5vw, 2.8rem);
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--text);
+    margin-bottom: 1.1rem;
+  }
+  h1 em { font-style: italic; color: var(--accent); font-weight: 400; }
+  .header-meta { display: flex; flex-wrap: wrap; gap: 0 1.75rem; font-size: 12.5px; color: var(--muted); font-weight: 300; }
+  .header-meta span { display: flex; align-items: center; }
+  .header-meta span + span::before { content: '·'; color: var(--faint); margin-right: 1.75rem; }
+
+  /* ── Layout ── */
+  main { max-width: 1100px; margin: 0 auto; padding: 2.5rem 3rem 6rem; }
+
+  /* ── Section label ── */
+  .section-label {
+    font-family: 'Syne Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--faint);
+    margin: 3rem 0 1.25rem;
+    padding-bottom: 0.65rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* ── Metric cards ── */
+  .metric-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  .metric-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.1rem 1.25rem;
+  }
+  .metric-card.up   { border-top: 2px solid var(--green-mid); }
+  .metric-card.down { border-top: 2px solid var(--red-mid); }
+  .metric-card.neutral { border-top: 2px solid var(--blue-mid); }
+  .metric-label { font-size: 11px; color: var(--muted); margin-bottom: 0.4rem; }
+  .metric-value { font-family: 'Syne', sans-serif; font-size: 1.9rem; font-weight: 700; line-height: 1; color: var(--text); margin-bottom: 0.4rem; }
+  .metric-sub { font-size: 11px; color: var(--faint); margin-bottom: 5px; }
+  .metric-delta {
+    font-family: 'Syne Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    padding: 2px 7px;
+    border-radius: 20px;
+  }
+  .delta-up     { background: var(--green-bg);  color: var(--green); }
+  .delta-down   { background: var(--red-bg);    color: var(--red); }
+  .delta-amber  { background: var(--amber-bg);  color: var(--amber); }
+  .delta-blue   { background: var(--blue-bg);   color: var(--blue); }
+
+  /* ── Chart cards ── */
+  .chart-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.5rem 1.75rem;
+    margin-bottom: 14px;
+  }
+  .chart-card-title { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 3px; }
+  .chart-card-sub   { font-size: 12px; color: var(--muted); margin-bottom: 1.1rem; }
+  .chart-note       { font-size: 11px; color: var(--faint); margin-top: 0.65rem; }
+  .chart-wrap { position: relative; width: 100%; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+  /* ── Legend ── */
+  .legend { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 1rem; font-size: 12px; color: var(--muted); }
+  .legend span { display: flex; align-items: center; gap: 6px; }
+  .leg { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+
+  /* ── Tier pill ── */
+  .tier {
+    display: inline-block;
+    font-family: 'Syne Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    border-radius: 3px;
+    font-weight: 500;
+  }
+  .tier-high    { background: var(--red-bg);    color: var(--red); }
+  .tier-mid     { background: var(--amber-bg);  color: var(--amber); }
+  .tier-low     { background: var(--bg2);       color: var(--muted); border: 1px solid var(--border); }
+  .tier-nps     { background: var(--blue-bg);   color: var(--blue); }
+
+  /* ── Full guide table ── */
+  .guide-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  .guide-table th {
+    font-family: 'Syne Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--faint);
+    text-align: left;
+    padding: 7px 10px 7px 0;
+    border-bottom: 1.5px solid var(--border2);
+    white-space: nowrap;
+  }
+  .guide-table th:not(:first-child) { text-align: right; }
+  .guide-table td {
+    padding: 8px 10px 8px 0;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+    color: var(--text);
+    line-height: 1.4;
+  }
+  .guide-table tr:last-child td { border-bottom: none; }
+  .guide-table td:not(:first-child):not(:nth-child(2)) { text-align: right; }
+  .guide-name { font-size: 12.5px; max-width: 340px; }
+
+  /* ── Inline bar ── */
+  .bar-wrap { display: flex; align-items: center; gap: 6px; justify-content: flex-end; }
+  .bar-bg { background: var(--bg3); border-radius: 3px; height: 7px; width: 80px; flex-shrink: 0; }
+  .bar-fill { height: 7px; border-radius: 3px; }
+  .bar-val { font-family: 'Syne Mono', monospace; font-size: 11px; min-width: 36px; text-align: right; }
+
+  /* ── Callout ── */
+  .callout {
+    border-radius: 8px;
+    padding: 0.9rem 1.1rem;
+    font-size: 13px;
+    line-height: 1.65;
+    margin: 1rem 0;
+    border-left: 3px solid;
+  }
+  .callout.positive { background: var(--green-bg); border-color: var(--green-mid); color: var(--green); }
+  .callout.warning  { background: var(--amber-bg); border-color: var(--amber-mid); color: var(--amber); }
+  .callout.info     { background: var(--blue-bg);  border-color: var(--blue-mid);  color: var(--blue); }
+  .callout strong   { font-weight: 500; }
+
+  /* ── Tier explainer ── */
+  .tier-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 0.5rem; }
+  .tier-card {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+    background: var(--bg2);
+  }
+  .tier-card-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 0.35rem;
+    color: var(--text);
+  }
+  .tier-card-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+  .tier-card.t0 { border-top: 2px solid var(--red-mid); }
+  .tier-card.t1 { border-top: 2px solid var(--blue-mid); }
+  .tier-card.t2 { border-top: 2px solid var(--green-mid); }
+  .tier-card.t3 { border-top: 2px solid var(--purple-mid); }
+
+  /* ── Footer ── */
+  footer {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 1.5rem 3rem 3rem;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11.5px;
+    color: var(--faint);
+    font-family: 'Syne Mono', monospace;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  @media (max-width: 768px) {
+    .topnav { padding: 0 1.25rem; }
+    header, main, footer { padding-left: 1.25rem; padding-right: 1.25rem; }
+    .metric-grid, .tier-grid { grid-template-columns: repeat(2, 1fr); }
+    .two-col { grid-template-columns: 1fr; }
+    h1 { font-size: 1.75rem; }
+    .topnav-date { display: none; }
+    .bar-bg { width: 50px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── Top navigation ── -->
+<nav class="topnav">
+  <a href="#" class="topnav-brand">Bloomerang Volunteer · VMS</a>
+  <div class="topnav-divider"></div>
+  <ul class="topnav-links">
+    <li><a href="vms_6mo_baseline_dashboard.html">Engagement Dashboard</a></li>
+    <li><a href="#" class="active">Guide Analysis</a></li>
+    <li><a href="" class="glossary-link">📖 Glossary</a></li>
+  </ul>
+  <div class="topnav-spacer"></div>
+  <span class="topnav-date">Launch: Mar 26, 2026</span>
+</nav>
+
+<!-- ── Header ── -->
+<header>
+  <div class="header-inner">
+    <div class="eyebrow">VMS · Pendo In-App Guides</div>
+    <h1>Protocol Guide Coverage — <em>Launch Week</em> Analysis</h1>
+    <div class="header-meta">
+      <span>Data source: Pendo</span>
+      <span>Launch week: Mar 26 – Apr 1, 2026</span>
+      <span>29 guides active</span>
+      <span>All guides assumed tied to new engagement &amp; education protocols</span>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- ── Top KPIs ── -->
+  <div class="section-label">Coverage summary — launch week</div>
+  <div class="metric-grid">
+    <div class="metric-card neutral">
+      <div class="metric-label">Total active guides</div>
+      <div class="metric-value">29</div>
+      <div class="metric-sub">1 NPS survey included</div>
+      <span class="metric-delta delta-blue">All tiers T0–T3</span>
+    </div>
+    <div class="metric-card neutral">
+      <div class="metric-label">Total guide views</div>
+      <div class="metric-value">12,129</div>
+      <div class="metric-sub">Across all 29 guides</div>
+    </div>
+    <div class="metric-card neutral">
+      <div class="metric-label">High-reach viewers</div>
+      <div class="metric-value">4,705</div>
+      <div class="metric-sub">Guides with 100+ unique viewers</div>
+    </div>
+    <div class="metric-card down">
+      <div class="metric-label">NPS score</div>
+      <div class="metric-value" style="color:var(--red);">−50</div>
+      <div class="metric-sub">6 responses · avg 5.5 / 10</div>
+      <span class="metric-delta delta-amber">Low volume</span>
+    </div>
+  </div>
+
+  <!-- ── Guide tier explainer ── -->
+  <div class="section-label">Protocol guide tier system</div>
+  <div class="tier-grid">
+    <div class="tier-card t0">
+      <div class="tier-card-name">T0 — Entry Modal</div>
+      <div class="tier-card-desc">Multi-step progressive onboarding modals shown on launch day. Orient users to the new navigation and prompt them to begin a guided tour. Two variants: Full Org Manager and Role Manager.</div>
+    </div>
+    <div class="tier-card t1">
+      <div class="tier-card-name">T1 — Platform Orientation</div>
+      <div class="tier-card-desc">High-level platform orientation surfaced from the top navigation. Activated programmatically. Two variants: Organization Manager and Role Manager.</div>
+    </div>
+    <div class="tier-card t2">
+      <div class="tier-card-name">T2 — Area Tour</div>
+      <div class="tier-card-desc">Multi-step tours of a specific product area — Org Tour and Opp Level Overview. Longer walkthroughs (11+ views/user) designed to familiarize users with a functional section of VMS.</div>
+    </div>
+    <div class="tier-card t3">
+      <div class="tier-card-name">T3 — Feature Walkthrough</div>
+      <div class="tier-card-desc">Deep, feature-specific walkthroughs (Volunteer List, Schedule, Roles, Tags, Signup Workflow, Qualifications, Template Reports, Email Automations, Importing, Attendance). Available at Org and Opp levels.</div>
+    </div>
+  </div>
+
+  <!-- ── High-reach stacked bar ── -->
+  <div class="section-label">High-reach guides — completion vs. dismissal</div>
+  <div class="chart-card">
+    <div class="chart-card-title">Completion · dismissal · neither — stacked to 100% of views</div>
+    <div class="chart-card-sub">Guides with 50+ unique viewers. Viewer count shown in parentheses.</div>
+    <div class="legend">
+      <span><span class="leg" style="background:#4caf70;"></span>Completion %</span>
+      <span><span class="leg" style="background:#d95c5c;"></span>Dismissal %</span>
+      <span><span class="leg" style="background:#e0dfd8;"></span>Neither (in-progress / re-views)</span>
+    </div>
+    <div class="chart-wrap" style="height:400px;"><canvas id="highReachChart"></canvas></div>
+    <p class="chart-note">T0 and Day Of modals (highest reach) show 0% completion. This is consistent with notification/banner-style guides that have no discrete completion step — but dismissal rates of 62–70% on the T0 modals still signal friction at the protocol's entry point.</p>
+  </div>
+
+  <!-- ── Two col: mid-reach + views per user ── -->
+  <div class="section-label">Mid-reach guides &amp; engagement depth</div>
+  <div class="two-col">
+    <div class="chart-card">
+      <div class="chart-card-title">Mid-reach guides — completion vs. dismissal</div>
+      <div class="chart-card-sub">Guides with 20–49 unique viewers</div>
+      <div class="legend">
+        <span><span class="leg" style="background:#4caf70;"></span>Completion %</span>
+        <span><span class="leg" style="background:#d95c5c;"></span>Dismissal %</span>
+        <span><span class="leg" style="background:#e0dfd8;"></span>Neither</span>
+      </div>
+      <div class="chart-wrap" style="height:280px;"><canvas id="midReachChart"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-card-title">Views per user — engagement depth</div>
+      <div class="chart-card-sub">Guides with 20+ unique viewers, sorted by VPU</div>
+      <div class="legend">
+        <span><span class="leg" style="background:#4a7fc1;"></span>Deep (8+)</span>
+        <span><span class="leg" style="background:#e8a030;"></span>Moderate (3–7)</span>
+        <span><span class="leg" style="background:#d0cfc8;"></span>Shallow (&lt;3)</span>
+      </div>
+      <div class="chart-wrap" style="height:280px;"><canvas id="vpuChart"></canvas></div>
+    </div>
+  </div>
+
+  <!-- ── NPS callout ── -->
+  <div class="callout info" style="margin-bottom: 0.5rem;">
+    <strong>NPS: −50 (6 responses, avg 5.5/10).</strong> 4 detractors, 1 neutral, 1 promoter. This is directionally concerning but statistically limited — monitor as response volume grows over the coming weeks. The NPS survey guide itself had a 40% dismissal rate among its 55 viewers.
+  </div>
+
+  <!-- ── Full guide table ── -->
+  <div class="section-label">Full guide breakdown — all 29 guides</div>
+  <div class="chart-card" style="padding: 1.25rem 1.5rem; overflow-x: auto;">
+    <table class="guide-table">
+      <thead>
+        <tr>
+          <th>Guide name</th>
+          <th style="text-align:left; padding-right: 12px;">Tier</th>
+          <th>Viewers</th>
+          <th>Views</th>
+          <th>VPU</th>
+          <th style="min-width:140px;">Completion %</th>
+          <th style="min-width:140px;">Dismissal %</th>
+        </tr>
+      </thead>
+      <tbody id="guideTableBody"></tbody>
+    </table>
+  </div>
+
+  <!-- ── Interpretation ── -->
+  <div class="section-label">Interpretation &amp; recommendations</div>
+  <div class="two-col">
+    <div class="callout positive">
+      <strong>What's working</strong><br><br>
+      The T2 Org Tour (402 viewers, 7.5% completion, 8.5% dismissal, 11.2 VPU) and T2 Opp Level Overview (154 viewers, 9.9% completion, 8.3 VPU) are the best-performing guides in the protocol. The T1 Platform Orientation for Org Managers (101 viewers, 10.2% completion, only 7.6% dismissal) also shows healthy engagement. Once users reach the walkthrough layer, the protocol is working.
+    </div>
+    <div class="callout warning">
+      <strong>Priority fix: T0 entry modals</strong><br><br>
+      The four T0 and Day Of modals account for the majority of all guide impressions, yet carry 0% completion and 29–70% dismissal rates. The funnel breaks before users ever reach T1/T2. Consider revising the framing, timing, or visual design of these entry modals to reduce immediate closure and improve take-up of the "Take the Tour" CTA.
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <span>VMS Protocol Guide Coverage — Launch Week Analysis</span>
+  <span>Bloomerang · Generated April 2026</span>
+</footer>
+
+<script>
+Chart.defaults.color = '#6b6860';
+Chart.defaults.borderColor = '#e4e3de';
+Chart.defaults.font.family = "'Inter', sans-serif";
+Chart.defaults.font.size = 11;
+
+const allGuides = [
+  { name: 'Day Of Nav — Take the Tour (Center Modal)',   tier: 'Day Of',  viewers: 2059, views: 2637,  vpu: 1.28, comp: 0,    dism: 64.4 },
+  { name: 'Day Of Nav — New Vol. Manager (Pop-up)',      tier: 'Day Of',  viewers: 1600, views: 3419,  vpu: 2.14, comp: 0,    dism: 28.7 },
+  { name: 'T0 — Progressive Onboarding — Role Mgrs',    tier: 'T0',      viewers: 419,  views: 424,   vpu: 1.01, comp: 0,    dism: 69.8 },
+  { name: 'T0 — Progressive Onboarding — Full Org Mgr', tier: 'T0',      viewers: 387,  views: 459,   vpu: 1.19, comp: 0,    dism: 62.3 },
+  { name: 'T2 Flow — Org Tour',                          tier: 'T2',      viewers: 402,  views: 4519,  vpu: 11.2, comp: 7.5,  dism: 8.5  },
+  { name: 'T2 Flow — Opp Level Overview',                tier: 'T2',      viewers: 154,  views: 1271,  vpu: 8.25, comp: 9.9,  dism: 11.6 },
+  { name: 'T1 Flow — Platform Orientation (Org Mgr)',    tier: 'T1',      viewers: 101,  views: 840,   vpu: 8.32, comp: 10.2, dism: 7.6  },
+  { name: 'Week Out — Vol. Manager URL Nav (Pop-up)',    tier: 'Op.',     viewers: 77,   views: 93,    vpu: 1.21, comp: 0,    dism: 37.6 },
+  { name: 'VMS NPS Survey',                              tier: 'NPS',     viewers: 55,   views: 137,   vpu: 2.49, comp: 4.4,  dism: 40.1 },
+  { name: 'T3 Flow — Volunteer List (Org)',              tier: 'T3',      viewers: 27,   views: 223,   vpu: 8.26, comp: 9.0,  dism: 10.8 },
+  { name: 'T3 Flow — Opportunities (Org)',               tier: 'T3',      viewers: 25,   views: 137,   vpu: 5.48, comp: 11.7, dism: 18.2 },
+  { name: 'T3 Flow — Schedule (Opp)',                    tier: 'T3',      viewers: 24,   views: 129,   vpu: 5.38, comp: 13.2, dism: 17.8 },
+  { name: 'T3 Flow — Form & Profile Fields (Org)',       tier: 'T3',      viewers: 11,   views: 114,   vpu: 10.4, comp: 5.3,  dism: 9.6  },
+  { name: 'T3 Flow — Qualifications (Org)',              tier: 'T3',      viewers: 8,    views: 90,    vpu: 11.3, comp: 6.7,  dism: 8.9  },
+  { name: 'T3 Flow — Roles (Opp)',                       tier: 'T3',      viewers: 8,    views: 24,    vpu: 3.0,  comp: 25.0, dism: 29.2 },
+  { name: 'T3 Flow — Tags (Org)',                        tier: 'T3',      viewers: 6,    views: 44,    vpu: 7.33, comp: 11.4, dism: 9.1  },
+  { name: 'T3 Flow — Signup Workflow (Opp)',             tier: 'T3',      viewers: 6,    views: 19,    vpu: 3.17, comp: 10.5, dism: 31.6 },
+  { name: 'T3 Flow — Importing (Org)',                   tier: 'T3',      viewers: 3,    views: 42,    vpu: 14.0, comp: 7.1,  dism: 7.1  },
+  { name: 'T3 Flow — Signup Workflow (Org)',             tier: 'T3',      viewers: 5,    views: 44,    vpu: 8.8,  comp: 6.8,  dism: 11.4 },
+  { name: 'T3 Flow — Template Reports (Opp)',            tier: 'T3',      viewers: 5,    views: 21,    vpu: 4.2,  comp: 19.0, dism: 23.8 },
+  { name: 'Onboarding Flow 1 — Admin',                   tier: 'Onb.',    viewers: 4,    views: 15,    vpu: 3.75, comp: 20.0, dism: 26.7 },
+  { name: 'T3 Flow — Template Reports (Org)',            tier: 'T3',      viewers: 3,    views: 19,    vpu: 6.33, comp: 10.5, dism: 15.8 },
+  { name: 'T1 Flow — Platform Orientation (Role Mgr)',   tier: 'T1',      viewers: 2,    views: 21,    vpu: 10.5, comp: 9.5,  dism: 0    },
+  { name: 'T3 Flow — Qualifications (Opp)',              tier: 'T3',      viewers: 3,    views: 27,    vpu: 9.0,  comp: 11.1, dism: 11.1 },
+  { name: 'T3 Flow — Email Automations (Org)',           tier: 'T3',      viewers: 3,    views: 28,    vpu: 9.33, comp: 10.7, dism: 7.1  },
+  { name: 'Onboarding Flow 3 — Opportunities',           tier: 'Onb.',    viewers: 1,    views: 7,     vpu: 7.0,  comp: 14.3, dism: 14.3 },
+  { name: 'T3 Flow — Attendance (Opp)',                  tier: 'T3',      viewers: 1,    views: 11,    vpu: 11.0, comp: 9.1,  dism: 9.1  },
+  { name: 'T3 Flow — Email Automations (Opp)',           tier: 'T3',      viewers: 1,    views: 4,     vpu: 4.0,  comp: 25.0, dism: 0    },
+  { name: 'Onboarding Flow 5 — Opp Level Overview',      tier: 'Onb.',    viewers: 1,    views: 14,    vpu: 14.0, comp: 7.1,  dism: 7.1  },
+];
+
+// ── Tier badge helper ──
+function tierBadge(t) {
+  const map = { 'T0':'tier-high','Day Of':'tier-high','T1':'tier-blue','T2':'tier-green','T3':'tier-purple','NPS':'tier-nps','Op.':'tier-mid','Onb.':'tier-mid' };
+  const cls = { 'T0':'background:#fdf0f0;color:#8c1f1f','Day Of':'background:#fdf0f0;color:#8c1f1f','T1':'background:#eef3fb;color:#1a3d6b','T2':'background:#eaf5ee;color:#1a6b3a','T3':'background:#f0eef8;color:#3d1a6b','NPS':'background:#eef3fb;color:#1a3d6b','Op.':'background:#fdf5e6;color:#7a4d0a','Onb.':'background:#fdf5e6;color:#7a4d0a' };
+  return `<span style="font-family:'Syne Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;padding:2px 7px;border-radius:3px;font-weight:500;white-space:nowrap;${cls[t]||''}">${t}</span>`;
+}
+
+// ── Populate full table ──
+const tbody = document.getElementById('guideTableBody');
+allGuides.forEach(g => {
+  const compColor = g.comp >= 10 ? '#1a6b3a' : g.comp > 0 ? '#7a4d0a' : '#a8a69f';
+  const dismColor = g.dism >= 50 ? '#8c1f1f' : g.dism >= 25 ? '#7a4d0a' : '#1a6b3a';
+  const compPct = Math.min(g.comp, 100);
+  const dismPct = Math.min(g.dism, 100);
+  tbody.innerHTML += `<tr>
+    <td class="guide-name">${g.name}</td>
+    <td style="padding-right:12px;">${tierBadge(g.tier)}</td>
+    <td style="text-align:right;font-family:'Syne Mono',monospace;font-size:12px;">${g.viewers.toLocaleString()}</td>
+    <td style="text-align:right;font-family:'Syne Mono',monospace;font-size:12px;">${g.views.toLocaleString()}</td>
+    <td style="text-align:right;font-family:'Syne Mono',monospace;font-size:12px;">${g.vpu.toFixed(1)}</td>
+    <td>
+      <div class="bar-wrap">
+        <div class="bar-bg"><div class="bar-fill" style="width:${compPct}%;background:${compColor};"></div></div>
+        <span class="bar-val" style="color:${compColor};">${g.comp.toFixed(1)}%</span>
+      </div>
+    </td>
+    <td>
+      <div class="bar-wrap">
+        <div class="bar-bg"><div class="bar-fill" style="width:${dismPct}%;background:${dismColor};"></div></div>
+        <span class="bar-val" style="color:${dismColor};">${g.dism.toFixed(1)}%</span>
+      </div>
+    </td>
+  </tr>`;
+});
+
+// ── High-reach stacked bar ──
+const highReach = allGuides.filter(g => g.viewers >= 50).sort((a,b) => b.viewers - a.viewers);
+new Chart(document.getElementById('highReachChart'), {
+  type: 'bar',
+  data: {
+    labels: highReach.map(g => `${g.name} (${g.viewers.toLocaleString()})`),
+    datasets: [
+      { label: 'Completion %', data: highReach.map(g => g.comp), backgroundColor: '#4caf70' },
+      { label: 'Dismissal %',  data: highReach.map(g => g.dism), backgroundColor: '#d95c5c' },
+      { label: 'Neither %',    data: highReach.map(g => Math.max(0, 100 - g.comp - g.dism)), backgroundColor: '#e0dfd8' }
+    ]
+  },
+  options: {
+    indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` ${ctx.dataset.label}: ${ctx.parsed.x.toFixed(1)}%` } } },
+    scales: {
+      x: { stacked: true, max: 100, ticks: { color: '#6b6860', callback: v => v+'%' }, grid: { color: '#f0efec' } },
+      y: { stacked: true, ticks: { color: '#6b6860', font: { size: 11 } } }
+    }
+  }
+});
+
+// ── Mid-reach stacked bar ──
+const midReach = allGuides.filter(g => g.viewers >= 20 && g.viewers < 50);
+new Chart(document.getElementById('midReachChart'), {
+  type: 'bar',
+  data: {
+    labels: midReach.map(g => g.name),
+    datasets: [
+      { label: 'Completion %', data: midReach.map(g => g.comp), backgroundColor: '#4caf70' },
+      { label: 'Dismissal %',  data: midReach.map(g => g.dism), backgroundColor: '#d95c5c' },
+      { label: 'Neither %',    data: midReach.map(g => Math.max(0, 100 - g.comp - g.dism)), backgroundColor: '#e0dfd8' }
+    ]
+  },
+  options: {
+    indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { stacked: true, max: 100, ticks: { color: '#6b6860', callback: v => v+'%' }, grid: { color: '#f0efec' } },
+      y: { stacked: true, ticks: { color: '#6b6860' } }
+    }
+  }
+});
+
+// ── Views per user ──
+const vpuGuides = allGuides.filter(g => g.viewers >= 20).sort((a,b) => b.vpu - a.vpu);
+new Chart(document.getElementById('vpuChart'), {
+  type: 'bar',
+  data: {
+    labels: vpuGuides.map(g => g.name),
+    datasets: [{
+      data: vpuGuides.map(g => g.vpu),
+      backgroundColor: vpuGuides.map(g => g.vpu >= 8 ? '#4a7fc1' : g.vpu >= 3 ? '#e8a030' : '#d0cfc8')
+    }]
+  },
+  options: {
+    indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { ticks: { color: '#6b6860' }, grid: { color: '#f0efec' } },
+      y: { ticks: { color: '#6b6860' } }
+    }
+  }
+});
+</script>
+</body>
+</html>
