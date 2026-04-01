@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VMS Reporting Glossary</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink: #1a1a1a;
+    --ink-muted: #6b6b6b;
+    --ink-faint: #a8a8a8;
+    --paper: #f7f5f0;
+    --paper-warm: #eeeae0;
+    --rule: #d8d4c8;
+    --accent: #2d5a3d;
+    --accent-light: #e8f0ea;
+    --accent-mid: #8cb89a;
+    --amber: #8c5a1a;
+    --amber-light: #f5eddb;
+    --red: #8c2d2d;
+    --red-light: #f5e8e8;
+    --blue: #1a3d5a;
+    --blue-light: #e8eff5;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    line-height: 1.6;
+    font-size: 15px;
+  }
+
+  /* ── Header ── */
+  header {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 3rem 4rem 2.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 240px; height: 240px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.04);
+  }
+  header::after {
+    content: '';
+    position: absolute;
+    bottom: -80px; left: 20%;
+    width: 320px; height: 160px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.03);
+  }
+  .header-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent-mid);
+    margin-bottom: 0.75rem;
+  }
+  header h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2.6rem;
+    font-weight: 400;
+    line-height: 1.15;
+    margin-bottom: 0.75rem;
+    color: #fff;
+  }
+  header h1 em {
+    font-style: italic;
+    color: var(--accent-mid);
+  }
+  .header-meta {
+    font-size: 13px;
+    color: rgba(255,255,255,0.45);
+    font-weight: 300;
+  }
+
+  /* ── Layout ── */
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 3rem 2rem 5rem;
+  }
+
+  /* ── Section headers ── */
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    margin: 3rem 0 1.25rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 1.5px solid var(--ink);
+  }
+  .section-header h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.5rem;
+    font-weight: 400;
+    color: var(--ink);
+  }
+  .section-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    padding: 3px 8px;
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    white-space: nowrap;
+  }
+
+  /* ── Intro blurb ── */
+  .section-intro {
+    font-size: 13.5px;
+    color: var(--ink-muted);
+    font-style: italic;
+    margin-bottom: 1.5rem;
+    padding-left: 1rem;
+    border-left: 2px solid var(--rule);
+    line-height: 1.7;
+  }
+
+  /* ── Term entries ── */
+  .term-list { display: flex; flex-direction: column; gap: 0; }
+
+  .term-entry {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .term-entry:first-child { border-top: 1px solid var(--rule); }
+
+  .term-key {
+    padding: 1rem 1.25rem 1rem 0;
+    border-right: 1px solid var(--rule);
+  }
+  .term-name {
+    font-family: 'DM Mono', monospace;
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--ink);
+    display: block;
+    margin-bottom: 3px;
+  }
+  .term-badge {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 9.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 2px 6px;
+    border-radius: 2px;
+    margin-top: 2px;
+  }
+  .badge-metric  { background: var(--blue-light);   color: var(--blue); }
+  .badge-guide   { background: var(--accent-light);  color: var(--accent); }
+  .badge-ux      { background: var(--amber-light);   color: var(--amber); }
+  .badge-product { background: #f0eaff;              color: #4a2d8c; }
+  .badge-role    { background: var(--paper-warm);    color: var(--ink-muted); border: 1px solid var(--rule); }
+  .badge-signal  { background: var(--red-light);     color: var(--red); }
+
+  .term-def {
+    padding: 1rem 0 1rem 1.25rem;
+  }
+  .term-def p {
+    font-size: 14px;
+    color: var(--ink);
+    line-height: 1.65;
+    margin-bottom: 0;
+  }
+  .term-def .term-note {
+    font-size: 12.5px;
+    color: var(--ink-muted);
+    margin-top: 0.4rem;
+    font-style: italic;
+  }
+  .term-def .term-formula {
+    font-family: 'DM Mono', monospace;
+    font-size: 11.5px;
+    background: var(--paper-warm);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    padding: 4px 10px;
+    display: inline-block;
+    margin-top: 0.4rem;
+    color: var(--ink-muted);
+  }
+
+  /* ── Guide spec table ── */
+  .spec-table { width: 100%; border-collapse: collapse; margin-top: 1rem; font-size: 13px; }
+  .spec-table th {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    text-align: left;
+    padding: 6px 12px 6px 0;
+    border-bottom: 1.5px solid var(--ink);
+    font-weight: 500;
+  }
+  .spec-table td {
+    padding: 9px 12px 9px 0;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+    color: var(--ink);
+    line-height: 1.5;
+  }
+  .spec-table tr:last-child td { border-bottom: none; }
+  .spec-table td:first-child {
+    font-family: 'DM Mono', monospace;
+    font-size: 11.5px;
+    font-weight: 500;
+    color: var(--accent);
+    white-space: nowrap;
+    padding-right: 1.5rem;
+  }
+  .spec-table td.field-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11.5px;
+    color: var(--ink-muted);
+    white-space: nowrap;
+    padding-right: 1.5rem;
+    width: 170px;
+  }
+
+  /* ── Footer ── */
+  footer {
+    border-top: 1.5px solid var(--ink);
+    margin-top: 4rem;
+    padding-top: 1.25rem;
+    font-size: 12px;
+    color: var(--ink-faint);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  footer span { font-family: 'DM Mono', monospace; }
+
+  @media (max-width: 640px) {
+    header { padding: 2rem 1.5rem; }
+    header h1 { font-size: 1.9rem; }
+    .container { padding: 2rem 1.25rem 4rem; }
+    .term-entry { grid-template-columns: 1fr; }
+    .term-key { border-right: none; border-bottom: 1px dashed var(--rule); padding-bottom: 0.5rem; }
+    .term-def { padding-left: 0; padding-top: 0.6rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-eyebrow">Bloomerang Volunteer · VMS Reporting</div>
+  <h1>Glossary of <em>Terms</em></h1>
+  <p class="header-meta">Protocol Guide Coverage Report &amp; Engagement Report &nbsp;·&nbsp; Launch period: Mar 26, 2026 &nbsp;·&nbsp; Baseline: Sep 26, 2025 – Mar 25, 2026</p>
+</header>
+
+<div class="container">
+
+  <!-- ══════════════════════════════════════
+       SECTION 1: ENGAGEMENT REPORT
+  ══════════════════════════════════════ -->
+  <div class="section-header">
+    <h2>Engagement Report</h2>
+    <span class="section-tag">Pendo · Product Analytics</span>
+  </div>
+  <p class="section-intro">Terms used in the weekly and baseline engagement analysis of the VMS (Bloomerang Volunteer) application, sourced from Pendo activity and PES data.</p>
+
+  <div class="term-list">
+
+    <div class="term-entry">
+      <div class="term-key">
+        <span class="term-name">Active Visitors</span>
+        <span class="term-badge badge-metric">Metric</span>
+      </div>
+      <div class="term-def">
+        <p>The count of unique visitors who performed at least one tracked interaction within the VMS application during a given time period. Used as the primary measure of weekly reach.</p>
+        <p class="term-note">In this report: compared weekly against a 6-month baseline average of ~2,308/week.</p>
+      </div>
+    </div>
+
+    <div class="term-entry">
+      <div class="term-key">
+        <span class="term-name">6-Month Baseline</span>
+        <span class="term-badge badge-metric">Metric</span>
+      </div>
+      <div class="term-def">
+        <p>The reference period of Sep 26, 2025 – Mar 25, 2026 (26 weeks) used to establish normal pre-launch behavior. All post-launch metrics are compared against weekly averages derived from this window to smooth out single-week anomalies.</p>
+      </div>
+    </div>
+
+    <div class="term-entry">
+      <div class="term-key">
+        <span class="term-name">PES</span>
+        <span class="term-badge badge-metric">Metric</span>
+      </div>
+      <div class="term-def">
+        <p>Product Engagement Score. A composite Pendo score (0–100) that combines Adoption, Stickiness, and Growth into a single measure of how deeply users are engaging with the product over a time period.</p>
+        <p class="term-formula">PES = f(Adoption, Stickiness, Growth)</p>
+        <p class="term-note">6-month baseline average: ~20.5. Launch week: 19.0 (−7%).</p>
+      </div>
+    </div>
+
+    <div class="term-entry">
+      <div class="term-key">
+        <span class="term-name">Adoption Score</span>
+        <span class="term-badge badge-metric">Metric</span>
+      </div>
+      <div class="term-def">
+        <p>The percentage of the eligible user base that used core tracked features or pages within the period. Measures breadth of feature usage across accounts or visitors.</p>
+        <p class="term-note">6-month baseline average: ~26.6. Launch week: 21.7 (−18%).</p>
+      </div>
+    </div>
+
+    <div class="term-entry">
+      <div class="term-key">
+        <span class="term-name">Stickiness Score</span>
+        <span class="term-badge badge-metric">Metric</span>
+      </div>
+      <div class="term-def">
+        <p>The ratio of active users in a shorter window (e.g., daily or weekly) to active users in a longer window (e.g., monthly). A higher stickiness score indicates users are returning more frequently relative to the total active user base.</p>
+        <p class="term-note">6-month baseline average: ~13.3. Launch week: 19.7 (+48%) — the standout positive signal in the launch-week data.</p>
+      </div>
+    </div>
+
+    <div class="term-entry">
+      <div class="term-key">
+        <span class="term-name">Growth Score</span>
+        <span class="term-badge badge-metric">Metric</span>
+      </div>
+      <div class="term-def">
+        <p>A measure of net new user acquisition — how many new visitors or accounts are being added relative to churned ones. Reflects whether the product is expanding its active user base.</p>
+        <p class="term-note">6-month baseline average: ~23.2. Launch week: 15.7 (−32%) — the sharpest drop in launch week, worth monitoring over subsequent weeks.</p>
+      </div>
+    </div>
+
+    <div class="term-entry">
+      <div class="term-key">
+        <span class="term-name">Page Events (numEvents)</span>
+        <span class="term-badge badge-metric">Metric</span>
+      </div>
+      <div class="term-def">
+        <p>Total number of page load or page view events recorded on a given VMS page during the period. Includes repeat visits by the same user. Used to assess overall traffic volume to specific areas of the product.</p>
+      </div>
+    </div>
+
+    <div class="term-entry">
+      <div class="term-key">
+        <span class="term-name">Unique Visitors</span>
+        <span class="term-badge badge-metric">Metric</span>
+      </div>
+      <div class="term-def">
+        <p>The deduplicated count of individual users (identified by Pendo visitor ID) who accessed a page or feature within the period, regardless of how many times they visited.</p>
+      </div>
+    </div>
+
+    <div class="term-entry">
+      <div class="term-key">
+        <span class="term-name">Unique Accounts</span>
+        <span class="term-badge badge-metric">Metric</span>
+      </div>
+      <div class="term-def">
+        <p>The deduplicated count of customer organizations (accounts) that had at least one visitor active on a given page or feature during the period. Useful for understanding breadth of adoption across the customer base rather than individual users.</p>
+      </div>
+    </div>
+
+    <div class="term-entry">
+      <div class="term-key">
+        <span class="term-name">Opp Dashboard</span>
+        <span class="term-badge badge-product">VMS Page</span>
+      </div>
+      <div class="term-def">
+        <p>The Opportunity-level dashboard page within VMS (page: <em>VMS - Opportunity - Dashboard</em>). A new page introduced as part of the March 26 launch that became one of the top-trafficked pages in the first week, indicating the protocol redesign is routing users through a new primary entry point.</p>
+      </div>
+    </div>
+
+    <div class="term-entry">
+      <div class="term-key">
+        <span class="term-name">Org Level</span>
+        <span class="term-badge badge-product">VMS Context</span>
+      </div>
+      <div class="term-def">
+        <p>The organization layer of VMS, where volunteer managers oversee a nonprofit organization's full volunteer program, including all opportunities, volunteer lists, schedules, and settings. Distinct from the Opportunity level, which scopes to a single event or initiative.</p>
+      </div>
+    </div>
+
+    <div class="term-entry">
+      <div class="term-key">
+        <span class="term-name">Opp Level</span>
+        <span class="term-badge badge-product">VMS Context</span>
+      </div>
+      <div class="term-def">
+        <p>The opportunity layer of VMS, scoped to a specific volunteer opportunity (event, program, or initiative). Includes pages for Schedule, Volunteers, Signup Workflow, Roles, General settings, and the Opportunity Dashboard.</p>
+      </div>
+    </div>
+
+    <div class="term-entry">
+      <div class="term-key">
+        <span class="term-name">Recruitment Page</span>
+        <span class="term-badge badge-product">VMS Page</span>
+      </div>
+      <div class="term-def">
+        <p>The public-facing opportunity recruitment pages within VMS, covering the public sign-up page, form questions, and the signup workflow. Was the #2 most visited page pre-launch; declined in relative ranking post-launch as the new Opp Dashboard absorbed entry-point traffic.</p>
+      </div>
+    </div>
+
+    <div class="term-entry">
+      <div class="term-key">
+        <span class="term-name">Top Nav Icons</span>
+        <span class="term-badge badge-ux">Navigation</span>
+      </div>
+      <div class="term-def">
+        <p>Icon-based navigation elements that appear in the top navigation bar at the opportunity level, linking to Schedule, Volunteer List, Settings, Roles &amp; Qualifications, Recruitment, and Email Communications sections. Pre-launch, these were the most-clicked features by unique visitor count. Post-launch, their usage dropped significantly, suggesting the new navigation architecture routes users differently.</p>
+      </div>
+    </div>
+
+  </div><!-- /term-list -->
+
+
+  <!-- ══════════════════════════════════════
+       SECTION 2: PROTOCOL GUIDE COVERAGE
+  ══════════════════════════════════════ -->
+  <div class="section-header" style="margin-top: 4rem;">
+    <h2>Protocol Guide Coverage Report</h2>
+    <span class="section-tag">Pendo · In-App Guides</span>
+  </div>
+  <p class="section-intro">Terms used in the guide performance analysis, drawn from Pendo guide metrics and the Notion In-App Messages Database where each guide's spec is documented.</p>
+
+  <div class="term-list">
+
+    <div class="term-entry">
+      <div class="term-key">
+        <span class="term-name">Guide</span>
+        <span class="term-badge badge-guide">Pendo</span>
+      </div>
+      <div class="term-def">
+        <p>An in-app message or walkthrough built and delivered via Pendo. Guides are triggered based on audience targeting rules (page, segment, date/time) and appear to users inside the Bloomerang Volunteer application. Per internal guidelines, guides are treated as extensions of the product and must inform rather than disrupt.</p>
+      </div>
+    </div>
+
+    <div class="term-entry">
+      <div class="term-key">
+        <span class="term-name">IAM</span>
+        <span class="term-badge badge-guide">Nomenclature</span>
+      </div>
+      <div class="term-def">
+        <p>In-App Message — the internal tracking ID prefix (e.g., IAM-459, IAM-618) assigned automatically in the Notion In-App Messages Database when a new guide request is created. Used to reference a specific guide across Pendo, Notion, and team discussions.</p>
+      </div>
+    </div>
+
+    <div class="term-entry">
+      <div class="term-key">
+        <span class="term-name">T0 — Entry Modal</span>
+        <span class="term-badge badge-guide">Guide Tier</span>
+      </div>
+      <div class="term-def">
+        <p>The first tier of the protocol guide system. T0 guides are multi-step progressive onboarding modals shown to users on or shortly after launch day. Their purpose is to orient users to the new navigation and prompt them to begin a guided tour. Two T0 guides exist: one for Full Org Managers and one for Role Managers.</p>
+        <p class="term-note">Launch week data: 419 and 387 unique viewers respectively; dismissal rates of 70% and 62%. No completions recorded — consistent with notification-style modals that lack a discrete completion step.</p>
+      </div>
+    </div>
+
+    <div class="term-entry">
+      <div class="term-key">
+        <span class="term-name">T1 — Platform Orientation</span>
+        <span class="term-badge badge-guide">Guide Tier</span>
+      </div>
+      <div class="term-def">
+        <p>The second tier. T1 guides provide a high-level orientation to the platform, surfaced from the top navigation. Two variants exist: one for Organization Managers and one for Role Managers. Activated programmatically from a top nav item.</p>
+        <p class="term-note">Launch week data: 101 and 2 unique viewers; ~10% completion rate and &lt;8% dismissal rate — healthy engagement for users who reach them.</p>
+      </div>
+    </div>
+
+    <div class="term-entry">
+      <div class="term-key">
+        <span class="term-name">T2 — Area Tour</span>
+        <span class="term-badge badge-guide">Guide Tier</span>
+      </div>
+      <div class="term-def">
+        <p>The third tier. T2 guides are multi-step tours of a specific area of the product — currently the Org Tour and the Opp Level Overview. These are longer walkthroughs (11+ views per user) designed to familiarize users with a functional section of VMS.</p>
+        <p class="term-note">Launch week data: 402 and 154 unique viewers; 7.5–9.9% completion; 8.5–11.6% dismissal; 8–11 views per user — the best-performing guides in the protocol.</p>
+      </div>
+    </div>
+
+    <div class="term-entry">
+      <div class="term-key">
+        <span class="term-name">T3 — Feature Walkthrough</span>
+        <span class="term-badge badge-guide">Guide Tier</span>
+      </div>
+      <div class="term-def">
+        <p>The fourth and most granular tier. T3 guides are deep, feature-specific walkthroughs covering individual VMS functions such as Volunteer List, Schedule, Roles, Tags, Signup Workflow, Qualifications, Template Reports, Email Automations, Form &amp; Profile Fields, Importing, and Attendance. Available at both Org and Opp levels.</p>
+        <p class="term-note">Launch week data: most T3 guides had low reach (1–27 viewers) as they are contextually triggered. Completion rates of 6–25% where data is sufficient. Dismissal rates generally low (&lt;15%).</p>
+      </div>
+    </div>
+
+    <div class="term-entry">
+      <div class="term-key">
+        <span class="term-name">Total Views</span>
+        <span class="term-badge badge-metric">Metric</span>
+      </div>
+      <div class="term-def">
+        <p>The total number of times a guide was displayed to any user during the period, including repeat views by the same user. A single user seeing a multi-step guide multiple times contributes multiple views.</p>
+      </div>
+    </div>
+
+    <div class="term-entry">
+      <div class="term-key">
+        <span class="term-name">Unique Viewers</span>
+        <span class="term-badge badge-metric">Metric</span>
+      </div>
+      <div class="term-def">
+        <p>The deduplicated count of individual users who were shown a guide at least once during the period, regardless of how many times they viewed it.</p>
+      </div>
+    </div>
+
+    <div class="term-entry">
+      <div class="term-key">
+        <span class="term-name">Views Per User (VPU)</span>
+        <span class="term-badge badge-metric">Metric</span>
+      </div>
+      <div class="term-def">
+        <p>The average number of times each unique viewer saw a guide during the period. A high VPU indicates either a multi-step guide that users are progressing through (positive) or a guide that users repeatedly encounter without completing (potentially negative).</p>
+        <p class="term-formula">VPU = Total Views ÷ Unique Viewers</p>
+        <p class="term-note">In this report: VPU of 8+ is treated as "deep engagement" (blue); 3–7 as moderate (amber); below 3 as shallow (gray).</p>
+      </div>
+    </div>
+
+    <div class="term-entry">
+      <div class="term-key">
+        <span class="term-name">Completion Rate</span>
+        <span class="term-badge badge-metric">Metric</span>
+      </div>
+      <div class="term-def">
+        <p>The percentage of total guide views that resulted in a completion event — typically clicking the final CTA or reaching the last step of a walkthrough. A 0% completion rate does not necessarily indicate failure; notification-style or banner guides have no completion step by design.</p>
+        <p class="term-formula">Completion Rate = Completions ÷ Total Views × 100</p>
+      </div>
+    </div>
+
+    <div class="term-entry">
+      <div class="term-key">
+        <span class="term-name">Dismissal Rate</span>
+        <span class="term-badge badge-signal">Signal</span>
+      </div>
+      <div class="term-def">
+        <p>The percentage of total guide views in which the user explicitly closed or dismissed the guide before completing it. A high dismissal rate (especially &gt;50%) on entry-point guides is a signal that the guide's timing, framing, or content is creating friction rather than value at first contact.</p>
+        <p class="term-formula">Dismissal Rate = Dismissals ÷ Total Views × 100</p>
+        <p class="term-note">In this report: rates ≥50% are flagged red; 25–49% amber; &lt;25% green.</p>
+      </div>
+    </div>
+
+    <div class="term-entry">
+      <div class="term-key">
+        <span class="term-name">NPS Survey (Guide)</span>
+        <span class="term-badge badge-guide">Guide Type</span>
+      </div>
+      <div class="term-def">
+        <p>A Pendo guide configured as a Net Promoter Score poll. Users are asked how likely they are to recommend Bloomerang Volunteer to a friend or colleague on a 0–10 scale. Responses are classified as Detractors (0–6), Neutrals (7–8), or Promoters (9–10).</p>
+        <p class="term-formula">NPS = % Promoters − % Detractors</p>
+        <p class="term-note">Launch week: NPS of −50 from 6 responses (4 detractors, 1 neutral, 1 promoter). Statistically limited — directional only until volume grows.</p>
+      </div>
+    </div>
+
+    <div class="term-entry">
+      <div class="term-key">
+        <span class="term-name">Reach Tier</span>
+        <span class="term-badge badge-guide">Classification</span>
+      </div>
+      <div class="term-def">
+        <p>A classification applied in this report to group guides by their unique viewer count during launch week, enabling more meaningful comparison within peer groups.</p>
+        <table class="spec-table" style="margin-top: 0.5rem;">
+          <tr><td>High</td><td>50+ unique viewers</td></tr>
+          <tr><td>Mid</td><td>20–49 unique viewers</td></tr>
+          <tr><td>Low</td><td>1–19 unique viewers</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="term-entry">
+      <div class="term-key">
+        <span class="term-name">Pop-up Modal</span>
+        <span class="term-badge badge-ux">Guide Format</span>
+      </div>
+      <div class="term-def">
+        <p>A guide format that appears as a smaller overlay on the page, typically anchored near a specific UI element or appearing in a corner. Less intrusive than a center screen modal. Used for the Day Of and Week Out URL navigation notification guides (IAM-459, IAM-586).</p>
+      </div>
+    </div>
+
+    <div class="term-entry">
+      <div class="term-key">
+        <span class="term-name">Center Screen Modal</span>
+        <span class="term-badge badge-ux">Guide Format</span>
+      </div>
+      <div class="term-def">
+        <p>A guide format that appears as a full overlay centered on the screen, blocking interaction with the underlying page until dismissed. Designed to be impossible to miss. Used for IAM-618 (the "Take the Tour" CTA on launch day). Per the Notion spec: "We don't want them to miss or simply dismiss this message."</p>
+      </div>
+    </div>
+
+    <div class="term-entry">
+      <div class="term-key">
+        <span class="term-name">Snooze / Remind Me</span>
+        <span class="term-badge badge-ux">Guide Feature</span>
+      </div>
+      <div class="term-def">
+        <p>A guide interaction option that dismisses the guide and suppresses it for 1 day, after which it reappears. Both the Day Of navigation guides (IAM-459 and IAM-618) included a snooze option. Contributes to repeat views (higher VPU) without constituting a dismissal.</p>
+      </div>
+    </div>
+
+    <div class="term-entry">
+      <div class="term-key">
+        <span class="term-name">Go Live Date</span>
+        <span class="term-badge badge-guide">Property</span>
+      </div>
+      <div class="term-def">
+        <p>The date a guide became active in Pendo and started being shown to users. For the launch cohort: IAM-618 went live Mar 26, 2026; IAM-459 went live Mar 30, 2026. Tracked as a property in the Notion In-App Messages Database.</p>
+      </div>
+    </div>
+
+    <div class="term-entry">
+      <div class="term-key">
+        <span class="term-name">End Date</span>
+        <span class="term-badge badge-guide">Property</span>
+      </div>
+      <div class="term-def">
+        <p>The scheduled date on which a guide will be deactivated and stop appearing to users. Both Day Of navigation guides are scheduled to end Apr 24, 2026 — approximately four weeks post-launch.</p>
+      </div>
+    </div>
+
+    <div class="term-entry">
+      <div class="term-key">
+        <span class="term-name">Org Manager</span>
+        <span class="term-badge badge-role">User Role</span>
+      </div>
+      <div class="term-def">
+        <p>A VMS user with full administrative access to an organization's volunteer program. Can manage all opportunities, volunteers, schedules, settings, and reports within an organization. Targeted by the Full Org Manager T0 and T1 guides.</p>
+      </div>
+    </div>
+
+    <div class="term-entry">
+      <div class="term-key">
+        <span class="term-name">Role Manager</span>
+        <span class="term-badge badge-role">User Role</span>
+      </div>
+      <div class="term-def">
+        <p>A VMS user with permissions scoped to managing specific roles or opportunities within an organization, rather than the full org. Targeted by the Role Manager T0 and T1 guides. Also referred to as "Opportunity &amp; Limited Org Manager" in some guide specs.</p>
+      </div>
+    </div>
+
+    <div class="term-entry">
+      <div class="term-key">
+        <span class="term-name">Guide Category: Operational</span>
+        <span class="term-badge badge-guide">Classification</span>
+      </div>
+      <div class="term-def">
+        <p>A guide category defined in the Notion In-App Messages Database indicating that the guide's purpose is operational — communicating product changes, navigation updates, or workflow instructions — as opposed to promotional or marketing-driven content.</p>
+        <p class="term-note">Both IAM-459 and IAM-618 are categorized as Operational, requested jointly by Marketing and Product.</p>
+      </div>
+    </div>
+
+    <div class="term-entry">
+      <div class="term-key">
+        <span class="term-name">URL Navigation Update</span>
+        <span class="term-badge badge-product">Context</span>
+      </div>
+      <div class="term-def">
+        <p>The underlying product change that triggered the launch-week protocol guides. The Bloomerang Volunteer application's navigation structure — including URL routing — was redesigned as part of the March 26, 2026 release. The goal, per guide copy: "Fewer clicks, clearer labels, and a layout designed around your day-to-day tasks."</p>
+      </div>
+    </div>
+
+  </div><!-- /term-list -->
+
+  <footer>
+    <span>VMS Reporting Glossary</span>
+    <span>Bloomerang · Generated Apr 2026</span>
+  </footer>
+
+</div>
+</body>
+</html>
